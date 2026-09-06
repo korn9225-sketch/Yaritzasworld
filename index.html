@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A little scrapbook made for an extraordinary mom and her son." />
+  <title>Her Little Universe</title>
+  <style>
+    :root {
+      --paper: #fffaf3;
+      --paper-deep: #f4eadc;
+      --ink: #30261f;
+      --muted: #78695d;
+      --coral: #e66f61;
+      --pink: #f5c6bd;
+      --coffee: #8b5e48;
+      --sun: #f7c95c;
+      --line: rgba(48, 38, 31, 0.12);
+      --shadow: 0 18px 50px rgba(88, 57, 35, 0.12);
+    }
+
+    body.dark-mode {
+      --paper: #241e1b;
+      --paper-deep: #332923;
+      --ink: #fff4e7;
+      --muted: #c6b5a6;
+      --coral: #ff8c78;
+      --pink: #754944;
+      --coffee: #c28b6d;
+      --sun: #f6ca66;
+      --line: rgba(255, 244, 231, 0.15);
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.26);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-width: 320px;
+      overflow-x: hidden;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.5;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    img, video { max-width: 100%; }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--sun); outline-offset: 4px; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      width: 100%;
+      padding: 18px clamp(20px, 5vw, 72px);
+      background: color-mix(in srgb, var(--paper) 90%, transparent);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+    .brand { color: var(--coral); font-size: 1.35rem; font-weight: 700; text-decoration: none; }
+    .main-nav { display: flex; align-items: center; gap: clamp(14px, 3vw, 32px); }
+    .main-nav a { color: var(--muted); font-size: 0.95rem; text-decoration: none; }
+    .main-nav a:hover, .main-nav a.active { color: var(--coral); }
+    .theme-toggle {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--ink);
+      background: var(--paper-deep);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+      gap: clamp(32px, 8vw, 120px);
+      align-items: center;
+      max-width: 1280px;
+      min-height: 640px;
+      margin: 0 auto;
+      padding: 80px clamp(20px, 6vw, 88px) 90px;
+    }
+    .eyebrow { margin-bottom: 18px; color: var(--coral); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+    .hero h1 { max-width: 650px; font-size: clamp(3.5rem, 7vw, 7.5rem); font-weight: 400; letter-spacing: -0.04em; line-height: 0.92; }
+    .hero h1 em { color: var(--coral); font-style: normal; }
+    .hero-copy { max-width: 500px; margin: 28px 0; color: var(--muted); font-size: 1.15rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 20px;
+      border: 1px solid var(--coral);
+      border-radius: 999px;
+      color: white;
+      background: var(--coral);
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(230, 111, 97, 0.25); }
+    .button.secondary { color: var(--ink); background: transparent; border-color: var(--line); }
+    .hero-art { position: relative; min-height: 470px; }
+    .hero-art::before { content: ''; position: absolute; inset: 8% 0 0 12%; border-radius: 48% 52% 44% 56%; background: var(--pink); transform: rotate(-7deg); }
+    .hero-art::after { content: '♡'; position: absolute; top: 4%; right: 10%; color: var(--coral); font-size: 5rem; transform: rotate(15deg); }
+    .hero-photo { position: absolute; right: 8%; bottom: 2%; width: min(84%, 430px); height: 88%; object-fit: cover; border: 12px solid var(--paper); box-shadow: var(--shadow); transform: rotate(4deg); }
+    .hero-sticker { position: absolute; bottom: 8%; left: 0; z-index: 1; display: grid; width: 130px; height: 130px; place-items: center; padding: 15px; border-radius: 50%; color: var(--ink); background: var(--sun); font-size: 1.05rem; font-weight: 700; text-align: center; transform: rotate(-12deg); }
+
+    .section { max-width: 1180px; margin: 0 auto; padding: 92px clamp(20px, 5vw, 72px); scroll-margin-top: 74px; }
+    .section-tint { max-width: none; background: var(--paper-deep); }
+    .section-inner { max-width: 1036px; margin: 0 auto; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 34px; }
+    .section-heading h2 { font-size: clamp(2.2rem, 4vw, 4rem); font-weight: 400; letter-spacing: -0.04em; line-height: 1; }
+    .section-heading p { max-width: 360px; color: var(--muted); }
+
+    .about-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 60px; align-items: center; }
+    .about-photo { width: 100%; max-height: 540px; object-fit: cover; border: 10px solid var(--paper); box-shadow: var(--shadow); transform: rotate(-3deg); }
+    .about-copy p { margin-bottom: 18px; color: var(--muted); font-size: 1.08rem; }
+    .signature { color: var(--coral) !important; font-size: 2rem !important; font-style: italic; }
+    .favorite-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 30px; }
+    .favorite { padding: 20px; border: 1px solid var(--line); background: var(--paper); }
+    .favorite img { width: 52px; height: 52px; margin-bottom: 12px; border-radius: 50%; object-fit: cover; }
+    .favorite h3 { margin-bottom: 4px; font-size: 1rem; }
+    .favorite p { margin: 0; font-size: 0.9rem; }
+    .kitty-section { position: relative; overflow: hidden; }
+    .kitty-section::after { content: '♡'; position: absolute; top: 48px; right: 8%; color: var(--pink); font-size: 9rem; line-height: 1; transform: rotate(15deg); }
+    .kitty-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 40px; align-items: center; }
+    .kitty-card { display: flex; align-items: center; gap: 24px; padding: 28px; border: 1px solid var(--line); background: var(--paper); box-shadow: var(--shadow); transform: rotate(-2deg); }
+    .kitty-card img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 8px solid var(--pink); }
+    .kitty-card h3 { margin-bottom: 8px; color: var(--coral); font-size: 1.8rem; font-weight: 400; }
+    .kitty-card p { color: var(--muted); }
+    .kitty-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .kitty-note { min-height: 150px; padding: 20px; border: 1px solid var(--line); background: var(--paper); }
+    .kitty-note:nth-child(2) { transform: translateY(18px); }
+    .kitty-note span { display: block; margin-bottom: 12px; color: var(--coral); font-size: 1.5rem; }
+    .kitty-note h3 { margin-bottom: 6px; font-size: 1rem; }
+    .kitty-note p { color: var(--muted); font-size: 0.9rem; }
+
+    .note-wrap { display: grid; grid-template-columns: 1fr auto; gap: 22px; align-items: center; padding: 26px; border: 1px solid var(--line); background: var(--paper); box-shadow: var(--shadow); }
+    .note-label { margin-bottom: 5px; color: var(--coral); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+    .note-box { min-height: 58px; font-size: 1.4rem; }
+    .memory-grid { display: grid; grid-template-columns: 1.15fr 0.85fr 0.85fr; grid-auto-rows: 240px; gap: 16px; margin-top: 44px; }
+    .memory { position: relative; overflow: hidden; border: 8px solid var(--paper); box-shadow: var(--shadow); cursor: pointer; }
+    .memory:first-child { grid-row: span 2; }
+    .memory img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .memory:hover img { transform: scale(1.05); }
+    .memory figcaption { position: absolute; right: 12px; bottom: 12px; left: 12px; padding: 8px 10px; color: white; background: rgba(48, 38, 31, 0.75); font-size: 0.9rem; }
+    .photo-collection { margin-top: 28px; }
+    .photo-collection h3 { margin-bottom: 14px; color: var(--coral); font-size: 1.15rem; font-weight: 400; }
+    .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .photo-card { overflow: hidden; border: 6px solid var(--paper); background: var(--paper); box-shadow: var(--shadow); }
+    .photo-card img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; cursor: pointer; }
+    .photo-card figcaption { padding: 10px; color: var(--muted); font-size: 0.85rem; }
+    .art-shelf { margin-top: 56px; padding-top: 38px; border-top: 1px solid var(--line); }
+    .art-shelf-header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
+    .art-shelf-header h3 { font-size: 1.7rem; font-weight: 400; }
+    .art-shelf-header p { max-width: 390px; color: var(--muted); }
+    .art-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .art-card { overflow: hidden; border: 1px solid var(--line); background: var(--paper); }
+    .art-card img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; cursor: pointer; }
+    .art-card figcaption { padding: 9px 10px; color: var(--muted); font-size: 0.8rem; }
+
+    .music-card { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 28px; align-items: center; padding: 34px; background: var(--coffee); color: #fff8ef; box-shadow: var(--shadow); }
+    .music-card h3 { margin-bottom: 8px; font-size: 2rem; font-weight: 400; }
+    .music-card p { color: #f4d8c9; }
+    .music-card .song-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 110px;
+      width: 100%;
+      padding: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff8ef;
+      font-size: clamp(1.25rem, 2vw, 2rem);
+      font-weight: 700;
+      text-align: center;
+    }
+    .music-card iframe { width: 100%; min-height: 80px; border: 0; }
+
+    .video-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .video-item { overflow: hidden; border: 1px solid var(--line); background: var(--paper); box-shadow: 0 8px 24px rgba(88, 57, 35, 0.08); }
+    .video-wrapper { position: relative; background: #15110f; }
+    .video-item video { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+    .video-play-button { position: absolute; top: 50%; left: 50%; padding: 11px 16px; border: 0; border-radius: 999px; color: white; background: rgba(48, 38, 31, 0.82); font-weight: 700; transform: translate(-50%, -50%); }
+    .video-item.playing .video-play-button { opacity: 0; pointer-events: none; }
+    .video-name { display: block; padding: 14px; font-size: 0.95rem; }
+
+    .footer { padding: 50px 20px 70px; color: var(--muted); text-align: center; }
+    .footer strong { display: block; margin-bottom: 8px; color: var(--coral); font-size: 1.2rem; }
+    .fullscreen-overlay { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(20, 14, 11, 0.94); }
+    .fullscreen-overlay.visible { display: flex; }
+    .fullscreen-image { max-width: 92vw; max-height: 88vh; object-fit: contain; }
+    .fullscreen-close { position: absolute; top: 22px; right: 24px; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.5); border-radius: 50%; color: white; background: transparent; font-size: 1.8rem; }
+
+    @media (max-width: 800px) {
+      .main-nav { gap: 12px; }
+      .main-nav a { font-size: 0.82rem; }
+      .hero { grid-template-columns: 1fr; padding-top: 58px; }
+      .hero-art { min-height: 390px; max-width: 500px; width: 100%; margin: 0 auto; }
+      .about-grid, .music-card { grid-template-columns: 1fr; gap: 34px; }
+      .kitty-grid { grid-template-columns: 1fr; gap: 34px; }
+      .photo-grid, .art-grid { grid-template-columns: repeat(2, 1fr); }
+      .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      .site-header { align-items: flex-start; flex-wrap: wrap; }
+      .main-nav { order: 3; width: 100%; min-width: 0; justify-content: space-between; gap: 8px; overflow: hidden; }
+      .main-nav a { min-width: 0; font-size: 0.76rem; white-space: nowrap; }
+      .hero { min-height: auto; padding-bottom: 50px; }
+      .hero h1 { font-size: 3.7rem; }
+      .hero-art { min-height: 330px; }
+      .hero-sticker { width: 100px; height: 100px; font-size: 0.86rem; }
+      .section { padding-top: 64px; padding-bottom: 64px; }
+      .section-heading { display: block; }
+      .section-heading h2 { margin-bottom: 14px; }
+      .note-wrap, .favorite-list { grid-template-columns: 1fr; }
+      .kitty-list { grid-template-columns: 1fr; }
+      .kitty-note:nth-child(2) { transform: none; }
+      .art-shelf-header { display: block; }
+      .art-shelf-header h3 { margin-bottom: 8px; }
+      .memory-grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 160px; }
+      .memory:first-child { grid-row: span 2; }
+      .video-grid { grid-template-columns: 1fr; }
+      .music-card { padding: 24px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top">her little universe ✦</a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a class="active" href="#top">Home</a>
+      <a href="#about">About her</a>
+      <a href="#hello-kitty">Hello Kitty</a>
+      <a href="#memories">Memories</a>
+      <a href="#music">Music</a>
+      <a href="#videos">Videos</a>
+    </nav>
+    <button id="darkModeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode"><span id="themeIcon">☾</span></button>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">A tiny corner of the internet, made for her</p>
+        <h1>She makes the world feel <em>softer.</em></h1>
+        <p class="hero-copy">A scrapbook for a beautiful mom, a devoted mama, and the woman who deserves an iced coffee break every single day.</p>
+        <div class="hero-actions">
+          <a class="button" href="#about">Meet her world</a>
+          <a class="button secondary" href="#memories">See the memories</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img class="hero-photo" src="images/her-profile.png" alt="Portrait of her" />
+        <div class="hero-sticker">best mama<br />in the universe ♡</div>
+      </div>
+    </section>
+
+    <section id="about" class="section section-tint">
+      <div class="section-inner about-grid">
+        <img class="about-photo" src="images/her-son-collage.png" alt="Her and her son together" />
+        <div class="about-copy">
+          <p class="eyebrow">About her</p>
+          <h2>The heart of this whole place.</h2>
+          <p>She is thoughtful, funny, strong, and the kind of person who gives her whole heart to the people she loves. Her son is her favorite person, her biggest joy, and the sweetest part of her story.</p>
+          <p>This page is a small celebration of the things that make her smile: family memories, Hello Kitty joy, a perfectly cold Starbucks iced coffee, and a good song playing in the background.</p>
+          <p class="signature">made with love, always ♡</p>
+          <div class="favorite-list">
+            <article class="favorite"><img src="images/treat-hello-kitty.png" alt="Hello Kitty" /><h3>Hello Kitty girl</h3><p>A little extra cute goes a long way.</p></article>
+            <article class="favorite"><img src="images/treat-coffee.png" alt="Iced coffee" /><h3>Iced coffee loyalist</h3><p>Starbucks, extra joy, no notes.</p></article>
+            <article class="favorite"><img src="images/hero-son.png" alt="Her son" /><h3>His whole world</h3><p>Her favorite title is Mom.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hello-kitty" class="section kitty-section">
+      <div class="section-inner kitty-grid">
+        <div class="kitty-card">
+          <img src="images/treat-hello-kitty.png" alt="Hello Kitty" />
+          <div><p class="eyebrow">Her cute corner</p><h3>Hello Kitty approved.</h3><p>A little pink, a little sweet, and exactly the right amount of adorable.</p></div>
+        </div>
+        <div>
+          <div class="section-heading"><div><p class="eyebrow">Tiny joys</p><h2>More cute things for her.</h2></div><p>Because every lovely universe needs a little Hello Kitty magic.</p></div>
+          <div class="kitty-list">
+            <article class="kitty-note"><span>♡</span><h3>Soft mornings</h3><p>Comfy clothes, a calm start, and something pink nearby.</p></article>
+            <article class="kitty-note"><span>✦</span><h3>Sweet breaks</h3><p>An iced Starbucks coffee tastes better with a little sparkle.</p></article>
+            <article class="kitty-note"><span>☻</span><h3>Happy heart</h3><p>Her son, her favorite people, and all the tiny reasons to smile.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <div class="section-heading"><div><p class="eyebrow">A note for today</p><h2>Because she deserves to hear it.</h2></div><p>Press the button whenever the day needs a little more kindness.</p></div>
+        <div class="note-wrap"><div><p class="note-label">little reminder</p><div id="noteDisplay" class="note-box" aria-live="polite">You are doing better than you think, mama.</div></div><button id="reminderButton" class="button" type="button">Give me one</button></div>
+      </div>
+    </section>
+
+    <section id="memories" class="section section-tint">
+      <div class="section-inner">
+        <div class="section-heading"><div><p class="eyebrow">The memory wall</p><h2>Her favorite people & moments.</h2></div><p>Every photo holds a little piece of the love that makes this family special.</p></div>
+        <div class="memory-grid">
+          <figure class="memory"><img src="images/her-son-collage.png" alt="Her and her son" /><figcaption>Her favorite adventure buddy.</figcaption></figure>
+          <figure class="memory"><img src="images/hero-son.png" alt="Her son smiling" /><figcaption>Her favorite little guy.</figcaption></figure>
+          <figure class="memory"><img src="images/son-collage.png" alt="A collage of her son" /><figcaption>Love, in every frame.</figcaption></figure>
+          <figure class="memory"><img src="images/Queen story.jpg" alt="A special memory" /><figcaption>The story keeps getting sweeter.</figcaption></figure>
+          <figure class="memory"><img src="images/Queen story2.jpg" alt="Another special memory" /><figcaption>Her kind of beautiful.</figcaption></figure>
+        </div>
+        <div class="photo-collection">
+          <h3>New family moments</h3>
+          <div class="photo-grid">
+            <figure class="photo-card"><img src="images/503352793_24471110695823330_4804929435708250502_n.jpg" alt="Her and her son at a colorful mural" /><figcaption>A colorful day out together.</figcaption></figure>
+            <figure class="photo-card"><img src="images/508291107_24566901002910965_4663434607102707782_n.jpg" alt="Her and her son sharing a quiet moment" /><figcaption>Quiet moments, big love.</figcaption></figure>
+            <figure class="photo-card"><img src="images/515838864_24727785306822533_8859830041029197091_n.jpg" alt="Her son dressed up" /><figcaption>Look at this handsome guy.</figcaption></figure>
+            <figure class="photo-card"><img src="images/516444396_24751967437737653_8667184845216661235_n.jpg" alt="A new family portrait" /><figcaption>Another page in their story.</figcaption></figure>
+          </div>
+        </div>
+        <div class="art-shelf">
+          <div class="art-shelf-header"><h3>Her imagination shelf</h3><p>Dreamy art, heroic moods, and a little Hello Kitty magic, all sorted into their own corner.</p></div>
+          <div class="art-grid">
+            <figure class="art-card"><img src="images/Gemini_Generated_Image_3pqcmu3pqcmu3pqc.jpg" alt="Illustrated mother and child adventure" /><figcaption>Adventure mode.</figcaption></figure>
+            <figure class="art-card"><img src="images/Gemini_Generated_Image_aopl6uaopl6uaopl.jpg" alt="Illustrated heroic woman" /><figcaption>Her superhero era.</figcaption></figure>
+            <figure class="art-card"><img src="images/Gemini_Generated_Image_kuedrukuedrukued.jpg" alt="Illustrated woman with Hello Kitty" /><figcaption>Hello Kitty comfort.</figcaption></figure>
+            <figure class="art-card"><img src="images/Gemini_Generated_Image_pjhbolpjhbolpjhb.jpg" alt="Illustrated fantasy family scene" /><figcaption>A little fantasy.</figcaption></figure>
+            <figure class="art-card"><img src="images/Gemini_Generated_Image_sj6ij3sj6ij3sj6i.jpg" alt="Illustrated heroic woman with a shield" /><figcaption>Brave and bright.</figcaption></figure>
+            <figure class="art-card"><img src="images/Gemini_Generated_Image_tvuqhutvuqhutvuq.jpg" alt="Illustrated heroic woman in a magical world" /><figcaption>Made of magic.</figcaption></figure>
+            <figure class="art-card"><img src="images/Gemini_Generated_Image_w6teypw6teypw6te.jpg" alt="Illustrated family adventure" /><figcaption>Family quest.</figcaption></figure>
+            <figure class="art-card"><img src="images/Gemini_Generated_Image_you3rkyou3rkyou3.jpg" alt="Illustrated Hello Kitty queen" /><figcaption>Queen energy.</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="music" class="section">
+      <div class="section-inner">
+        <div class="section-heading"><div><p class="eyebrow">The soundtrack</p><h2>Press play on her little world.</h2></div><p>Some songs just belong to a person. This one is for her.</p></div>
+        <div class="music-card"><div><h3>This is my song to her.</h3><p>For the woman I love, the best mom, and the softest place in my world.</p></div><div class="song-note" aria-label="This is my song to her">This is my song to her.</div></div>
+      </div>
+    </section>
+
+    <section id="videos" class="section section-tint">
+      <div class="section-inner">
+        <div class="section-heading"><div><p class="eyebrow">Her little cinema</p><h2>Press play, smile, repeat.</h2></div><p>A collection of the funny, strange, and wonderful things worth keeping around.</p></div>
+        <div class="video-grid">
+          <article class="video-item"><div class="video-wrapper"><video src="videos/Clerks 2 - Goodbye Horses.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Clerks 2 - Goodbye Horses</span></article>
+          <article class="video-item"><div class="video-wrapper"><video src="videos/Stewie as the pinball.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Stewie as the pinball</span></article>
+          <article class="video-item"><div class="video-wrapper"><video src="videos/Q.LAZZARUS - Goodbye Horses.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Q.LAZZARUS - Goodbye Horses</span></article>
+          <article class="video-item"><div class="video-wrapper"><video src="videos/family guy - chris dances like buffalo bill.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Family Guy - Chris dances like Buffalo Bill</span></article>
+          <article class="video-item"><div class="video-wrapper"><video src="videos/make_him_in_the_style_of_famil.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Make Him in the Style of Family Guy</span></article>
+          <article class="video-item"><div class="video-wrapper"><video src="videos/Morgan Wallen - Love Somebody (Audio) - web.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Morgan Wallen - Love Somebody (Audio)</span></article>
+          <article class="video-item"><div class="video-wrapper"><video src="videos/Morgan Wallen - Smile (Official Music Video).mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Morgan Wallen - Smile (Official Music Video)</span></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><strong>made for her little universe ♡</strong><p>For the best mom, the best son, and all the good days ahead.<br />FUCK THUNDER AND STRESS AND BULLSHIT!!!!!!<br /><span>Created by Zak 💖😘</span></p></footer>
+  <div id="imageModal" class="fullscreen-overlay" aria-hidden="true"><button id="closeImageModal" class="fullscreen-close" type="button" aria-label="Close expanded image">&times;</button><img id="fullscreenImage" class="fullscreen-image" src="" alt="" /></div>
+
+  <script>
+    const notes = [
+      'You are doing better than you think, mama.',
+      'Your son is lucky to have your heart guiding him.',
+      'You deserve an iced coffee and a completely peaceful afternoon.',
+      'You make ordinary days feel special.',
+      'Your laugh is one of the best things in the world.',
+      'You are strong, loved, and allowed to rest.',
+      'The way you love your son is beautiful to witness.',
+      'Today looks better with a little Hello Kitty energy.'
+    ];
+    let lastNote = -1;
+    document.getElementById('reminderButton').addEventListener('click', () => {
+      let next;
+      do { next = Math.floor(Math.random() * notes.length); } while (next === lastNote);
+      lastNote = next;
+      document.getElementById('noteDisplay').textContent = notes[next];
+    });
+
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+    function setTheme(dark) {
+      body.classList.toggle('dark-mode', dark);
+      themeIcon.textContent = dark ? '☀' : '☾';
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    }
+    setTheme(localStorage.getItem('theme') === 'dark');
+    document.getElementById('darkModeToggle').addEventListener('click', () => setTheme(!body.classList.contains('dark-mode')));
+
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('fullscreenImage');
+    function closeImage() { modal.classList.remove('visible'); modal.setAttribute('aria-hidden', 'true'); modalImage.src = ''; }
+    document.querySelectorAll('.memory img, .photo-card img, .art-card img, .about-photo, .hero-photo').forEach((image) => image.addEventListener('click', () => { modalImage.src = image.src; modalImage.alt = image.alt; modal.classList.add('visible'); modal.setAttribute('aria-hidden', 'false'); }));
+    document.getElementById('closeImageModal').addEventListener('click', closeImage);
+    modal.addEventListener('click', (event) => { if (event.target === modal) closeImage(); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeImage(); });
+
+    document.querySelectorAll('.video-item').forEach((item) => {
+      const video = item.querySelector('video');
+      const button = item.querySelector('.video-play-button');
+      const sync = () => { item.classList.toggle('playing', !video.paused); button.textContent = video.paused ? '▶ Play' : '⏸ Pause'; };
+      button.addEventListener('click', async () => { if (video.paused) await video.play(); else video.pause(); sync(); });
+      video.addEventListener('play', sync);
+      video.addEventListener('pause', sync);
+      video.addEventListener('ended', () => { item.classList.remove('playing'); button.textContent = '▶ Replay'; });
+    });
+
+    const sections = [...document.querySelectorAll('main section[id]')];
+    const links = [...document.querySelectorAll('.main-nav a')];
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) links.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id)); }), { rootMargin: '-35% 0px -55% 0px' });
+    sections.forEach((section) => observer.observe(section));
+  </script>
+</body>
+</html>
