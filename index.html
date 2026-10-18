@@ -196,13 +196,14 @@
       font-weight: 700;
       text-align: center;
     }
-    .music-card iframe { width: 100%; min-height: 80px; border: 0; }
+    .music-listen { justify-self: stretch; }
 
     .video-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
     .video-item { overflow: hidden; border: 1px solid var(--line); background: var(--paper); box-shadow: 0 8px 24px rgba(88, 57, 35, 0.08); }
     .video-wrapper { position: relative; background: #15110f; }
     .video-item video { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
     .video-play-button { position: absolute; top: 50%; left: 50%; padding: 11px 16px; border: 0; border-radius: 999px; color: white; background: rgba(48, 38, 31, 0.82); font-weight: 700; transform: translate(-50%, -50%); }
+    .video-play-button:disabled { cursor: not-allowed; }
     .video-item.playing .video-play-button { opacity: 0; pointer-events: none; }
     .video-name { display: block; padding: 14px; font-size: 0.95rem; }
 
@@ -360,7 +361,7 @@
     <section id="music" class="section">
       <div class="section-inner">
         <div class="section-heading"><div><p class="eyebrow">The soundtrack</p><h2>Press play on her little world.</h2></div><p>Some songs just belong to a person. This one is for her.</p></div>
-        <div class="music-card"><div><h3>This is my song to her.</h3><p>For the woman I love, the best mom, and the softest place in my world.</p></div><iframe title="Wisdom in Chains song" src="https://bandcamp.com/EmbeddedPlayer/album=1142202206/size=large/bgcol=8b5e48/linkcol=fff8ef/track=3086241985/transparent=true/" allow="autoplay"></iframe></div>
+        <div class="music-card"><div><h3>This is my song to her.</h3><p>For the woman I love, the best mom, and the softest place in my world.</p></div><a class="button music-listen" href="https://wisdom-in-chains.bandcamp.com/track/best-of-me" target="_blank" rel="noopener noreferrer">Play “Best Of Me” on Bandcamp ↗</a></div>
       </div>
     </section>
 
@@ -373,7 +374,7 @@
           <article class="video-item"><div class="video-wrapper"><video src="videos/Q.LAZZARUS - Goodbye Horses.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Q.LAZZARUS - Goodbye Horses</span></article>
           <article class="video-item"><div class="video-wrapper"><video src="videos/family guy - chris dances like buffalo bill.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Family Guy - Chris dances like Buffalo Bill</span></article>
           <article class="video-item"><div class="video-wrapper"><video src="videos/make_him_in_the_style_of_famil.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Make Him in the Style of Family Guy</span></article>
-          <article class="video-item"><div class="video-wrapper"><video src="videos/Morgan Wallen - Love Somebody (Audio) - web.mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Morgan Wallen - Love Somebody (Audio)</span></article>
+          <article class="video-item"><div class="video-wrapper"><video src="videos/Morgan Wallen - Love Somebody (Audio).mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Morgan Wallen - Love Somebody (Audio)</span></article>
           <article class="video-item"><div class="video-wrapper"><video src="videos/Morgan Wallen - Smile (Official Music Video).mp4" controls playsinline preload="metadata"></video><button class="video-play-button" type="button">▶ Play</button></div><span class="video-name">Morgan Wallen - Smile (Official Music Video)</span></article>
         </div>
       </div>
@@ -424,9 +425,14 @@
       const video = item.querySelector('video');
       const button = item.querySelector('.video-play-button');
       const sync = () => { item.classList.toggle('playing', !video.paused); button.textContent = video.paused ? '▶ Play' : '⏸ Pause'; };
-      button.addEventListener('click', async () => { if (video.paused) await video.play(); else video.pause(); sync(); });
+      const markUnavailable = () => { item.classList.remove('playing'); button.disabled = true; button.textContent = 'Video unavailable'; };
+      button.addEventListener('click', async () => {
+        try { if (video.paused) await video.play(); else video.pause(); sync(); }
+        catch { markUnavailable(); }
+      });
       video.addEventListener('play', sync);
       video.addEventListener('pause', sync);
+      video.addEventListener('error', markUnavailable, { once: true });
       video.addEventListener('ended', () => { item.classList.remove('playing'); button.textContent = '▶ Replay'; });
     });
 
