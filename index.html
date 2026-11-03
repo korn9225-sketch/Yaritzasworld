@@ -453,7 +453,7 @@
         country: data.country_name || 'Unknown'
       };
 
-      await fetch('https://script.google.com/macros/s/AKfycbxA1NK7997VnbMwk22xVDXpBxK5FiVUHkP6Ozyn7ZltfXY6DhHb-E0_J1Nl6AmiS8Nx/exec', {
+      const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycbxA1NK7997VnbMwk22xVDXpBxK5FiVUHkP6Ozyn7ZltfXY6DhHb-E0_J1Nl6AmiS8Nx/exec'
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
