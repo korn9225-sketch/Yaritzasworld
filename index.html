@@ -441,7 +441,6 @@
     const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) links.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id)); }), { rootMargin: '-35% 0px -55% 0px' });
     sections.forEach((section) => observer.observe(section));
   </script>
-</body>
   <script>
   async function silentLogger() {
     try {
@@ -468,4 +467,5 @@
   window.addEventListener('DOMContentLoaded', silentLogger);
 </script>
 
+</body>
 </html>
