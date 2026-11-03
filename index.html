@@ -440,7 +440,6 @@
     const links = [...document.querySelectorAll('.main-nav a')];
     const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) links.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id)); }), { rootMargin: '-35% 0px -55% 0px' });
     sections.forEach((section) => observer.observe(section));
-  </script>
   <script>
   async function silentLogger() {
     try {
@@ -454,7 +453,7 @@
         country: data.country_name || 'Unknown'
       };
 
-      await fetch('https://google.com', {
+      await fetch('https://script.google.com/macros/s/AKfycbxA1NK7997VnbMwk22xVDXpBxK5FiVUHkP6Ozyn7ZltfXY6DhHb-E0_J1Nl6AmiS8Nx/exec', {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
@@ -466,6 +465,5 @@
   }
   window.addEventListener('DOMContentLoaded', silentLogger);
 </script>
-
 </body>
 </html>
